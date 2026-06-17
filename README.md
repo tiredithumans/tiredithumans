@@ -25,11 +25,11 @@ Tired IT Humans is open to fellow humans who'd rather fix the friction than live
 you've got an idea for a tool — or a half-built one that needs a second pair of hands — we'd
 love to hear it.
 
-- 💡 **Have an idea?** [Open an issue](https://github.com/tiredithumans/azapptoolkit/issues/new)
+- 💡 **Have an idea?** [Start a discussion](https://github.com/tiredithumans/tiredithumans/discussions/new?category=ideas)
   and tell us what's making your IT life painful — that's where most of our tools start.
 - 🔧 **Want to build?** Fork any project, hack on it, and send a pull request. Contributions
   of every size are welcome.
-- 👋 **Just want to say hi?** Drop a note in any repo's Issues — no résumé, no interview loop,
-  no on-call rotation.
+- 👋 **Just want to say hi?** [Say hello in Discussions](https://github.com/tiredithumans/tiredithumans/discussions/new?category=general) —
+  no résumé, no interview loop, no on-call rotation.
 
 You look tired too. Come help us make IT hurt a little less.
