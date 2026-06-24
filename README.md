@@ -17,6 +17,10 @@ out of the day — so we can all spend a little less time fighting IT and a litt
   for managing Microsoft Entra ID app registrations. No PowerShell modules, no scripting, no
   service principal of its own — just sign in and go.
 
+- **[ninjaone-patch-toolkit](https://github.com/tiredithumans/ninjaone-patch-toolkit)** — a
+  native desktop app for patching-operations teams. Sign in to the NinjaOne API, filter the
+  fleet, see every pending patch per server, and export it all to Excel.
+
 *More on the way.*
 
 ## Got an idea? Pull up a chair ☕
