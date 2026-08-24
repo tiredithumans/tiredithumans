@@ -1,0 +1,310 @@
+/* tiredithumans.com — one stylesheet, no build step, no JavaScript, no external
+   fonts or assets. Deliberately the same construction as the IFO product site
+   (ifo.tiredithumans.com), so the two read as one shop.
+
+   The palette is where they part: IFO's is its own sky gradient — navy and
+   cyan — and this one is warm graphite and amber. Same instrument family,
+   different instrument, so the company page never looks like a second copy of
+   the product page. */
+
+:root {
+    --bg: #14161b;
+    --bg-raised: #1c1f27;
+    --ink: #edeef2;
+    --ink-dim: #a3a7b3;
+    --accent: #e9b44c;
+    --accent-hi: #ffd27d;
+    --rule: #2b303b;
+    --width: 46rem;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html {
+    -webkit-text-size-adjust: 100%;
+    scroll-behavior: smooth;
+}
+
+/* The nav links are in-page anchors, so a jump lands the heading hard against
+   the top of the viewport. A scroll margin gives it air. */
+h2[id] {
+    scroll-margin-top: 1.5rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    html {
+        scroll-behavior: auto;
+    }
+}
+
+body {
+    margin: 0;
+    padding: 0 1.25rem 5rem;
+    background: linear-gradient(180deg, #191c23 0%, #14161b 45%, #101216 100%);
+    background-attachment: fixed;
+    color: var(--ink);
+    font: 400 17px/1.65 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+}
+
+.wrap {
+    max-width: var(--width);
+    margin: 0 auto;
+}
+
+header.site {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 2.5rem 0 1.5rem;
+    border-bottom: 1px solid var(--rule);
+    margin-bottom: 2.5rem;
+}
+
+header.site .mark {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.55rem;
+    font-size: 1.2rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+    text-decoration: none;
+}
+
+/* The mark carries its own rounded corners so it sits correctly as a favicon
+   with no container to clip it. Do not add a border-radius here — it would
+   round an already-rounded shape and flatten the corners twice. */
+header.site .mark img {
+    display: block;
+    width: 30px;
+    height: 30px;
+}
+
+header.site nav {
+    margin-left: auto;
+    display: flex;
+    gap: 1.25rem;
+    font-size: 0.95rem;
+}
+
+/* Decorative: the wordmark is beside it in the header and the company name is
+   spelled out directly beneath it, so announcing the image would be noise. */
+.hero-mark {
+    display: block;
+    width: 88px;
+    height: 88px;
+    margin: 0 0 1.25rem;
+}
+
+/* The legal entity name, exactly as filed. It is the eyebrow rather than a
+   footnote because this page doubles as the organization's verifiable public
+   identity — Apple, Google and D&B all check the name against their records,
+   and a name that only appears in a copyright line is one an eye can miss. */
+.kicker {
+    margin: 0 0 0.6rem;
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+}
+
+h1 {
+    font-size: 2.1rem;
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin: 0 0 0.5rem;
+}
+
+h2 {
+    font-size: 1.25rem;
+    letter-spacing: -0.01em;
+    margin: 2.75rem 0 0.75rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+}
+
+h3 {
+    font-size: 1.05rem;
+    margin: 0 0 0.15rem;
+}
+
+p,
+li {
+    color: var(--ink);
+}
+
+.lede {
+    font-size: 1.2rem;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    margin-bottom: 2rem;
+}
+
+a {
+    color: var(--accent);
+    text-decoration-thickness: 1px;
+    text-underline-offset: 2px;
+}
+
+a:hover {
+    color: var(--accent-hi);
+}
+
+/* The dark background swallows the default focus ring in most browsers, and a
+   keyboard user losing their place on a page this short has nothing to
+   navigate by. */
+a:focus-visible {
+    outline: 2px solid var(--accent-hi);
+    outline-offset: 3px;
+    border-radius: 2px;
+}
+
+ul {
+    padding-left: 1.25rem;
+}
+
+li {
+    margin-bottom: 0.5rem;
+}
+
+strong {
+    color: #fff;
+}
+
+.card {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 1.25rem 1.4rem;
+    margin: 1.5rem 0;
+}
+
+.card p:last-child {
+    margin-bottom: 0;
+}
+
+/* Products. One featured card at full width, then a grid for the rest — the
+   hierarchy is the point, not decoration: the flagship gets the width and the
+   published tools sit beside each other. */
+.product {
+    background: var(--bg-raised);
+    border: 1px solid var(--rule);
+    border-radius: 14px;
+    padding: 1.25rem 1.4rem;
+    margin: 1.25rem 0;
+    /* Column flex so the link row can be pushed to the bottom edge: the grid
+       stretches side-by-side cards to a common height, and without this the
+       links float wherever the shorter description happens to end. */
+    display: flex;
+    flex-direction: column;
+}
+
+.product.feature {
+    border-color: #3a4152;
+    background: linear-gradient(180deg, #20242e 0%, #1a1d25 100%);
+}
+
+/* A flex container does not collapse its children's margins, so the spacing
+   inside a product card is stated once, explicitly, rather than left to the
+   arithmetic of two adjacent margins. */
+.product > * {
+    margin-top: 0;
+}
+
+.product h3 {
+    margin-bottom: 0.2rem;
+}
+
+.product p {
+    margin-bottom: 0.9rem;
+}
+
+.product p:last-child {
+    margin-bottom: 0;
+}
+
+.meta {
+    margin: 0 0 0.75rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-dim);
+}
+
+.links {
+    margin-top: auto;
+    padding-top: 1rem;
+    margin-bottom: 0;
+    font-size: 0.95rem;
+}
+
+.links a {
+    margin-right: 1.25rem;
+}
+
+.grid {
+    display: grid;
+    gap: 1.25rem;
+    grid-template-columns: repeat(auto-fit, minmax(17rem, 1fr));
+}
+
+.grid .product {
+    margin: 0;
+}
+
+/* Trademark attribution and the small asides. Present because they have to be;
+   sized so they do not compete with the copy above them. */
+p.fine {
+    margin-top: 1.25rem;
+    font-size: 0.85rem;
+    color: var(--ink-dim);
+}
+
+footer.site {
+    margin-top: 4rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--rule);
+    font-size: 0.9rem;
+    color: var(--ink-dim);
+}
+
+footer.site p {
+    margin: 0 0 0.4rem;
+    color: var(--ink-dim);
+}
+
+footer.site a {
+    margin-right: 1.1rem;
+}
+
+@media (max-width: 34rem) {
+    body {
+        font-size: 16px;
+    }
+
+    h1 {
+        font-size: 1.7rem;
+    }
+
+    header.site {
+        flex-wrap: wrap;
+        gap: 0.5rem 0.75rem;
+    }
+
+    header.site nav {
+        margin-left: 0;
+        width: 100%;
+    }
+
+    .hero-mark {
+        width: 72px;
+        height: 72px;
+        margin-bottom: 1.25rem;
+    }
+}

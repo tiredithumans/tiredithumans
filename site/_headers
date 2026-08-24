@@ -1,0 +1,20 @@
+# Cloudflare Pages consumes this file and does not serve it.
+#
+# There is deliberately no `X-Robots-Tag` block here. The IFO product site has
+# one until that app launches; this site is the company's public identity and
+# must be findable. See the comment at the top of index.html.
+#
+# The page has no scripts, no external assets and no forms, so the policy that
+# describes it exactly is also the strictest one available. If an external
+# asset is ever added — a font, an analytics tag, an embedded video — it will
+# be blocked until the policy below is widened, which is the intended order of
+# events rather than an obstacle.
+#
+# Comments sit outside the rule block on purpose: every non-comment line inside
+# one is parsed as `Name: value`, and a malformed header there fails quietly.
+
+/*
+  Content-Security-Policy: default-src 'none'; img-src 'self'; style-src 'self'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
+  Permissions-Policy: geolocation=(), camera=(), microphone=()

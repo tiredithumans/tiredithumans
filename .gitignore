@@ -1,0 +1,5 @@
+# wrangler scratch state, written by `wrangler pages deploy`
+.wrangler/
+
+# macOS
+.DS_Store

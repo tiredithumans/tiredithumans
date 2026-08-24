@@ -1,0 +1,9 @@
+# Crawl and index everything — that is the point of this site.
+#
+# Worth stating explicitly because the sibling site at ifo.tiredithumans.com
+# ships the opposite (crawl-allowed but `noindex`, until IFO launches), and the
+# two are otherwise built the same way. Do not copy that arrangement here.
+User-agent: *
+Allow: /
+
+Sitemap: https://tiredithumans.com/sitemap.xml

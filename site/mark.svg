@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64">
+  <!-- The Tired IT Humans mark: three strokes, each shorter and fainter than
+       the one above it. It is an exhale — the 😮‍💨 of the name — and it is also
+       three lines of output running out of steam, which is the same joke told
+       to a different audience.
+
+       Hand-drawn, unlike IFO's icon, which is generated from the same script
+       that emits the app icon PNG so the two cannot drift. There is no second
+       copy of this mark anywhere, so there is nothing here to drift from — if
+       one is ever cut into a PNG (an apple-touch-icon, say), generate it from
+       this file rather than redrawing it.
+
+       The rounded corners are drawn INTO the shape: nothing on the web applies
+       an icon mask, and the stylesheet must not add a border-radius on top. -->
+  <rect x="1" y="1" width="62" height="62" rx="14" fill="#1c1f27" stroke="#343a47" stroke-width="1.5"/>
+  <g stroke="#e9b44c" stroke-width="7" stroke-linecap="round">
+    <line x1="17" y1="21" x2="47" y2="21"/>
+    <line x1="17" y1="32" x2="38" y2="32" opacity="0.72"/>
+    <line x1="17" y1="43" x2="27" y2="43" opacity="0.45"/>
+  </g>
+</svg>
