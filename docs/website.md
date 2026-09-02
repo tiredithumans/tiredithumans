@@ -1,6 +1,6 @@
 # tiredithumans.com
 
-The company's public front door. Source in [`site/`](../site); five files, one
+The company's public front door. Source in [`site/`](../site); six files, one
 stylesheet, no build step, no JavaScript, and no external assets.
 
 ## Why it exists
@@ -70,12 +70,17 @@ fetched: `curl -sI 'https://tiredithumans.com/?v=1'`.
   page announcing a release that has not happened is the one kind of wrong that
   costs trust rather than just needing an edit — the IFO site is written under
   the same rule, and when there is a store link to make, both change together.
-- **The "nothing of ours in the middle" sentence is scoped to the two desktop
-  tools.** That is a factual claim about how software is built, which makes it
-  the sort of sentence that has to move in the same change as the behaviour it
-  describes. IFO's version of it lives on IFO's own privacy page where it is
-  maintained; widening this one to cover "our software" would make this page a
-  second, unwatched copy of a legal statement.
+- **The "nothing of ours in the middle" claim is scoped to the two desktop
+  tools — not the whole paragraph it sits in.** That is a factual claim about
+  how software is built, which makes it the sort of sentence that has to move in
+  the same change as the behaviour it describes. IFO's version of it lives on
+  IFO's own privacy page where it is maintained; widening this one to cover "our
+  software" would make this page a second, unwatched copy of a legal statement.
+  The licence sentence beside it carries no such claim, so it names every open
+  tool — crt-query included, which is MIT/Apache-2.0 but is a CLI querying a
+  public third-party database rather than a desktop app under your credentials.
+  A new tool goes in the licence sentence; it only joins the second one if the
+  claim is actually true of it.
 - **The Content-Security-Policy in `_headers` is as strict as the page is
   simple** — `default-src 'none'`, images and styles from `'self'`, nothing
   else. Adding a font, an embed, or an analytics tag will be blocked until the

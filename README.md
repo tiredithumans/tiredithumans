@@ -21,6 +21,10 @@ out of the day — so we can all spend a little less time fighting IT and a litt
   native desktop app for patching-operations teams. Sign in to the NinjaOne API, filter the
   fleet, see every pending patch per server, and export it all to Excel.
 
+- **[crt-query](https://github.com/tiredithumans/crt-query)** — a command-line tool for
+  certificate transparency. Query the crt.sh public database directly for every certificate
+  issued for a domain, or the ones about to expire, as a table, JSON, or CSV.
+
 *More on the way.*
 
 ## Got an idea? Pull up a chair ☕
