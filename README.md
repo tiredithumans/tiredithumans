@@ -1,4 +1,4 @@
-# Tired IT Humans 😮‍💨
+# Tired IT Humans
 
 We're a small collective of fellow **tired IT humans** — admins, engineers, and tinkerers
 who got tired of how needlessly *painful* modern IT has become.
