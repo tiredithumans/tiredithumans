@@ -57,6 +57,45 @@ the apex if you want one — the page already declares the apex as its
 Verify with a cache-busting query string rather than trusting a URL you already
 fetched: `curl -sI 'https://tiredithumans.com/?v=1'`.
 
+### What Cloudflare changes on the way out
+
+**The page a visitor gets is not always the page in `site/`.** Cloudflare
+rewrites responses as they leave the edge, and because the policy here allows
+no scripts at all, a rewrite that injects one fails silently in the source and
+visibly on the live page at the same time. That has already happened twice:
+
+- **Email Address Obfuscation** turned the `mailto:` in `index.html` into a
+  `/cdn-cgi/l/email-protection` link plus a decode script. The script was
+  blocked, the decode never ran, and the contact block rendered as the literal
+  text `[email protected]` — on the page whose stated job is to be read by an
+  enrolment reviewer. Now **off** for the zone: Scrape Shield → Email Address
+  Obfuscation.
+- **JavaScript Detections** injects an inline script into every HTML response
+  and strips the `ETag` while doing it. `site/_headers` sends
+  `Cache-Control: no-transform` on the HTML, which stops the injection at the
+  edge; the comment in that file carries the reasoning. It costs Brotli on the
+  HTML — 8.6 KB instead of 2.7 KB on a first load — which is the price of the
+  page matching its source on a Free plan. JS detections is a Super Bot Fight
+  Mode feature, so there is no toggle for it below Pro, and the wrangler OAuth
+  token cannot write it either (`/bot_management` returns 10405 for that auth
+  scheme). On Pro: turn it off and delete the `no-transform` rules.
+
+**`site/robots.txt` is not served verbatim.** The managed `robots.txt` setting
+is on, and Cloudflare prepends its own block — a Content Signals policy and
+`Disallow: /` for known AI crawlers (ClaudeBot, GPTBot, CCBot, Bytespider,
+Google-Extended and others) — above the file in this repo. This is deliberate
+and does not weaken the indexability described below: the managed block sets
+`search=yes`, and the only Google agent it disallows is `Google-Extended`,
+which governs AI training rather than Googlebot. Fetch the file to see what is
+served; do not read `site/robots.txt` and assume. The long legal preamble can
+be dropped without losing the crawler rules — zone Overview → Control AI
+Crawlers → uncheck **Display Content Signals Policy**.
+
+The general hazard, and the reason this section exists: **a Cloudflare zone
+setting is part of this site's behaviour and is not in this repo.** Nothing in
+`site/` or `docs/` would have revealed any of the above. Verify the served
+page, not the file you edited.
+
 ## Things that are deliberate
 
 - **This site is indexable; the IFO site is not.** ifo.tiredithumans.com ships
@@ -64,7 +103,9 @@ fetched: `curl -sI 'https://tiredithumans.com/?v=1'`.
   `robots.txt` here say why in place, because the two sites are built the same
   way and the wrong half of that pattern is easy to copy across. A company
   website search engines have been told to forget cannot do the job described
-  above.
+  above. (`site/robots.txt` is not served verbatim — Cloudflare prepends a
+  managed block above it, which leaves search indexing intact. Details in
+  "What Cloudflare changes on the way out" above.)
 - **No availability claims for IFO.** No store badges, no dates, no "coming
   soon". The card says *in development* and links to the product site. A live
   page announcing a release that has not happened is the one kind of wrong that
@@ -84,7 +125,10 @@ fetched: `curl -sI 'https://tiredithumans.com/?v=1'`.
 - **The Content-Security-Policy in `_headers` is as strict as the page is
   simple** — `default-src 'none'`, images and styles from `'self'`, nothing
   else. Adding a font, an embed, or an analytics tag will be blocked until the
-  policy is widened, which is the intended order of events.
+  policy is widened, which is the intended order of events. What that framing
+  missed: the script that trips this policy is likelier to be one *Cloudflare*
+  injected than one you added, and a blocked injection shows up nowhere in the
+  source. See "What Cloudflare changes on the way out" above.
 - **`site/mark.svg` is hand-drawn and is the only copy of the mark.** IFO's
   icon is generated from the script that also emits its app-icon PNG,
   specifically so the site's copy cannot drift from the app's. Nothing here has
@@ -103,3 +147,11 @@ fetched: `curl -sI 'https://tiredithumans.com/?v=1'`.
 2. Its trademarks in the fine-print paragraph, if it names anyone else's system.
 3. `curl` every link you added. A landing page with a dead link is the one an
    enrolment reviewer opens.
+4. Deploy, then **diff the served page against the source** rather than trusting
+   the deploy output:
+   `curl -s 'https://tiredithumans.com/?v=1' | diff - site/index.html`
+   An empty diff is the pass condition. Anything else is Cloudflare rewriting
+   the page on the way out — and an unexpected `<script>` in that diff is being
+   blocked by the CSP, which means whatever it was meant to do is silently not
+   happening. This check is what turns a broken contact address into a
+   two-minute fix instead of something a reviewer finds first.
