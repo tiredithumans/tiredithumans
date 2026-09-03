@@ -18,3 +18,33 @@
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: geolocation=(), camera=(), microphone=()
+
+# The `no-transform` below exists because Cloudflare rewrites the HTML it
+# serves, and nothing else in this repo would record that it does.
+#
+# Two edge features have already modified this page in ways the source cannot
+# show. Email Address Obfuscation rewrote the `mailto:` in index.html into a
+# `/cdn-cgi/` link plus a decode script; JavaScript Detections injects an
+# inline script into every HTML response. The policy above allows no scripts
+# at all, so both were blocked — and the blocked decode script left the
+# contact address rendering as the literal text "[email protected]" on the
+# live site while `site/index.html` still looked perfectly correct. JSD
+# injection also strips the ETag from the HTML response, so every repeat
+# visit re-transfers the whole body instead of revalidating.
+#
+# `no-transform` tells Cloudflare to leave these responses alone. It is a fix
+# that lives in the source tree rather than in a dashboard toggle, which
+# matters here: a zone setting is invisible to anyone reading this repo and
+# does not survive rebuilding the zone. Scoped to the HTML, because that is
+# all Cloudflare injects into — style.css and mark.svg keep the longer
+# max-age Pages gives them.
+#
+# The general lesson, which cost a working contact address to learn: verify
+# the SERVED page, not the source. `curl` the live URL with a cache-busting
+# query string and diff it against `site/`.
+
+/
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
+
+/index.html
+  Cache-Control: public, max-age=0, must-revalidate, no-transform
