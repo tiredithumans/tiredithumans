@@ -98,28 +98,36 @@ page, not the file you edited.
 
 ## Things that are deliberate
 
-- **This site is indexable; the IFO site is not.** ifo.tiredithumans.com ships
-  `X-Robots-Tag: noindex` until that app launches. Both `_headers` and
-  `robots.txt` here say why in place, because the two sites are built the same
-  way and the wrong half of that pattern is easy to copy across. A company
+- **This site is indexable, and that is the one thing not to copy from a
+  pre-launch product site.** A product site that has not shipped may carry
+  `X-Robots-Tag: noindex`, or sit behind Cloudflare Access, or both —
+  ifo.tiredithumans.com has done each in turn. The sites in this account are
+  built the same way, so the wrong half of that pattern is easy to carry
+  across; both `_headers` and `robots.txt` here say so in place. A company
   website search engines have been told to forget cannot do the job described
   above. (`site/robots.txt` is not served verbatim — Cloudflare prepends a
   managed block above it, which leaves search indexing intact. Details in
   "What Cloudflare changes on the way out" above.)
-- **No availability claims for IFO.** No store badges, no dates, no "coming
-  soon". The card says *in development* and links to the product site. A live
-  page announcing a release that has not happened is the one kind of wrong that
-  costs trust rather than just needing an edit — the IFO site is written under
-  the same rule, and when there is a store link to make, both change together.
+- **No availability claims, and no links a visitor cannot open.** Every card
+  on the page is a shipped tool whose links resolve publicly: no store badges,
+  no dates, no "coming soon", and nothing pointing at a page behind a login. A
+  live page announcing a release that has not happened is the one kind of wrong
+  that costs trust rather than just needing an edit; a link that dead-ends at
+  an access wall is the same failure with a shorter fuse, because the visitor
+  most likely to follow it is the enrolment reviewer. If an unreleased product
+  is ever listed here, the card describes what it is and says nothing about
+  when.
 - **The "nothing of ours in the middle" claim is scoped to the two desktop
   tools — not the whole paragraph it sits in.** That is a factual claim about
   how software is built, which makes it the sort of sentence that has to move in
-  the same change as the behaviour it describes. IFO's version of it lives on
-  IFO's own privacy page where it is maintained; widening this one to cover "our
-  software" would make this page a second, unwatched copy of a legal statement.
-  The licence sentence beside it carries no such claim, so it names every open
-  tool — crt-query included, which is MIT/Apache-2.0 but is a CLI querying a
-  public third-party database rather than a desktop app under your credentials.
+  the same change as the behaviour it describes — so it covers only the products
+  whose behaviour this page can speak for. A product that maintains its own
+  privacy statement keeps its version of the claim there; widening this one to
+  cover "our software" would make this page a second, unwatched copy of a legal
+  statement. The licence sentence beside it carries no such claim, so it names
+  every open tool — crt-query included, which is MIT/Apache-2.0 but is a CLI
+  querying a public third-party database rather than a desktop app under your
+  credentials.
   A new tool goes in the licence sentence; it only joins the second one if the
   claim is actually true of it.
 - **The Content-Security-Policy in `_headers` is as strict as the page is
@@ -129,8 +137,8 @@ page, not the file you edited.
   missed: the script that trips this policy is likelier to be one *Cloudflare*
   injected than one you added, and a blocked injection shows up nowhere in the
   source. See "What Cloudflare changes on the way out" above.
-- **`site/mark.svg` is hand-drawn and is the only copy of the mark.** IFO's
-  icon is generated from the script that also emits its app-icon PNG,
+- **`site/mark.svg` is hand-drawn and is the only copy of the mark.** The IFO
+  site's icon is generated from the script that also emits its app-icon PNG,
   specifically so the site's copy cannot drift from the app's. Nothing here has
   a second copy to drift from — so if one is ever cut (an `apple-touch-icon`
   PNG, say), generate it *from this file* rather than redrawing it, and this
@@ -141,12 +149,13 @@ page, not the file you edited.
 
 ## Checklist when adding a product
 
-1. A card in `index.html` — title, `.meta` line (platforms · status), one
-   paragraph, and links that resolve. Featured card for the flagship, the grid
-   for the rest.
+1. A card in the grid in `index.html` — title, `.meta` line (platforms ·
+   status), one paragraph, and links that resolve. Every card carries the same
+   weight; there is no featured slot.
 2. Its trademarks in the fine-print paragraph, if it names anyone else's system.
-3. `curl` every link you added. A landing page with a dead link is the one an
-   enrolment reviewer opens.
+3. `curl` every link you added, unauthenticated. A landing page with a dead
+   link — or one that lands on a login page — is the one an enrolment reviewer
+   opens.
 4. Deploy, then **diff the served page against the source** rather than trusting
    the deploy output:
    `curl -s 'https://tiredithumans.com/?v=1' | diff - site/index.html`

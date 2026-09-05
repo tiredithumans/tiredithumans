@@ -188,9 +188,8 @@ strong {
     margin-bottom: 0;
 }
 
-/* Products. One featured card at full width, then a grid for the rest — the
-   hierarchy is the point, not decoration: the flagship gets the width and the
-   published tools sit beside each other. */
+/* Products. One grid of equal cards: nothing here outranks anything else, so
+   the published tools sit beside each other at the same weight. */
 .product {
     background: var(--bg-raised);
     border: 1px solid var(--rule);
@@ -202,11 +201,6 @@ strong {
        links float wherever the shorter description happens to end. */
     display: flex;
     flex-direction: column;
-}
-
-.product.feature {
-    border-color: #3a4152;
-    background: linear-gradient(180deg, #20242e 0%, #1a1d25 100%);
 }
 
 /* A flex container does not collapse its children's margins, so the spacing
