@@ -1,11 +1,5 @@
 /* tiredithumans.com — one stylesheet, no build step, no JavaScript, no external
-   fonts or assets. Deliberately the same construction as the IFO product site
-   (ifo.tiredithumans.com), so the two read as one shop.
-
-   The palette is where they part: IFO's is its own sky gradient — navy and
-   cyan — and this one is warm graphite and amber. Same instrument family,
-   different instrument, so the company page never looks like a second copy of
-   the product page. */
+   fonts or assets. The palette is warm graphite and amber. */
 
 :root {
     --bg: #14161b;

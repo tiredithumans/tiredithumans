@@ -4,8 +4,7 @@
        three lines of output running out of steam, which is the same joke told
        to a different audience.
 
-       Hand-drawn, unlike IFO's icon, which is generated from the same script
-       that emits the app icon PNG so the two cannot drift. There is no second
+       Hand-drawn. There is no second
        copy of this mark anywhere, so there is nothing here to drift from — if
        one is ever cut into a PNG (an apple-touch-icon, say), generate it from
        this file rather than redrawing it.
