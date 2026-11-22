@@ -23,91 +23,50 @@ nothing else to hunt down.
 
 **Cloudflare Pages, project `tiredithumans`** → <https://tiredithumans.com/>
 
-Same account as the IFO product site (`ifo-app` → ifo.tiredithumans.com), which
-keeps the two under one bill and one DNS zone.
-
 ```sh
 npx wrangler pages deploy site --project-name tiredithumans --branch main
 ```
 
-**Deploy `site/` directly. Do not build a staging copy.** The IFO site needs
-one because its source directory also holds an internal README, so its runbook
-carries a hand-maintained list of which files to copy — and Pages falls back to
-`index.html` for unknown paths, which means a file left out of that list is not
-a 404 anyone would notice but the index page served under the wrong
-content-type. This repo dodges the whole failure mode by keeping `site/`
-exhaustively deployable: **everything in it is meant to be public, and anything
-that is not public goes here in `docs/` instead.** Keep it that way.
-
-### DNS
-
-The zone is on Cloudflare. Before this site existed, `tiredithumans.com` and
-`www.tiredithumans.com` both answered **error 1016** — proxied records pointing
-at an origin that no longer resolves. Attaching the Pages custom domain
-replaces them.
-
-The wrangler OAuth token in use has `pages (write)` but only `zone (read)` and
-no DNS write, so **the custom-domain step is a dashboard action**, not a
-scriptable one: Pages → `tiredithumans` → Custom domains → add
-`tiredithumans.com`, then `www.tiredithumans.com`. Cloudflare rewrites the
-records itself once the domain is attached. Add a redirect rule from `www` to
-the apex if you want one — the page already declares the apex as its
-`<link rel="canonical">`, which settles the search-engine half either way.
+**Deploy `site/` directly. Do not build a staging copy.** Pages falls back to
+`index.html` for unknown paths, so a file left out of a hand-maintained copy
+list is not a 404 anyone would notice but the index page served under the wrong
+content-type. This repo avoids that by keeping `site/` exhaustively deployable:
+**everything in it is meant to be public, and so is everything else in this
+repository, its history included.** Account, DNS and hosting-settings notes are
+kept privately, not here.
 
 Verify with a cache-busting query string rather than trusting a URL you already
 fetched: `curl -sI 'https://tiredithumans.com/?v=1'`.
 
-### What Cloudflare changes on the way out
+### What the host changes on the way out
 
-**The page a visitor gets is not always the page in `site/`.** Cloudflare
-rewrites responses as they leave the edge, and because the policy here allows
-no scripts at all, a rewrite that injects one fails silently in the source and
-visibly on the live page at the same time. That has already happened twice:
+**The page a visitor gets is not always the page in `site/`.** The host can
+rewrite responses as they leave the edge, and because the policy here allows no
+scripts at all, a rewrite that injects one fails silently in the source and
+visibly on the live page at the same time: a rewritten `mailto:` whose decode
+script is blocked renders as the literal text `[email protected]`.
 
-- **Email Address Obfuscation** turned the `mailto:` in `index.html` into a
-  `/cdn-cgi/l/email-protection` link plus a decode script. The script was
-  blocked, the decode never ran, and the contact block rendered as the literal
-  text `[email protected]` — on the page whose stated job is to be read by an
-  enrolment reviewer. Now **off** for the zone: Scrape Shield → Email Address
-  Obfuscation.
-- **JavaScript Detections** injects an inline script into every HTML response
-  and strips the `ETag` while doing it. `site/_headers` sends
-  `Cache-Control: no-transform` on the HTML, which stops the injection at the
-  edge; the comment in that file carries the reasoning. It costs Brotli on the
-  HTML — 8.6 KB instead of 2.7 KB on a first load — which is the price of the
-  page matching its source on a Free plan. JS detections is a Super Bot Fight
-  Mode feature, so there is no toggle for it below Pro, and the wrangler OAuth
-  token cannot write it either (`/bot_management` returns 10405 for that auth
-  scheme). On Pro: turn it off and delete the `no-transform` rules.
+`site/_headers` sends `Cache-Control: no-transform` on the HTML, which keeps
+the served page byte-identical to the source; the comment in that file carries
+the reasoning.
 
-**`site/robots.txt` is not served verbatim.** The managed `robots.txt` setting
-is on, and Cloudflare prepends its own block — a Content Signals policy and
-`Disallow: /` for known AI crawlers (ClaudeBot, GPTBot, CCBot, Bytespider,
-Google-Extended and others) — above the file in this repo. This is deliberate
-and does not weaken the indexability described below: the managed block sets
-`search=yes`, and the only Google agent it disallows is `Google-Extended`,
-which governs AI training rather than Googlebot. Fetch the file to see what is
-served; do not read `site/robots.txt` and assume. The long legal preamble can
-be dropped without losing the crawler rules — zone Overview → Control AI
-Crawlers → uncheck **Display Content Signals Policy**.
+**`site/robots.txt` is not served verbatim.** A managed block (a content-signals
+policy and `Disallow: /` for known AI-training crawlers) is prepended above the
+file in this repo. It leaves search indexing intact. Fetch the file to see what
+is served; do not read `site/robots.txt` and assume.
 
-The general hazard, and the reason this section exists: **a Cloudflare zone
-setting is part of this site's behaviour and is not in this repo.** Nothing in
-`site/` or `docs/` would have revealed any of the above. Verify the served
-page, not the file you edited.
+**A hosting setting is part of this site's behaviour and is not in this repo.**
+Verify the served page, not the file you edited.
 
 ## Things that are deliberate
 
 - **This site is indexable, and that is the one thing not to copy from a
   pre-launch product site.** A product site that has not shipped may carry
-  `X-Robots-Tag: noindex`, or sit behind Cloudflare Access, or both —
-  ifo.tiredithumans.com has done each in turn. The sites in this account are
-  built the same way, so the wrong half of that pattern is easy to carry
-  across; both `_headers` and `robots.txt` here say so in place. A company
-  website search engines have been told to forget cannot do the job described
-  above. (`site/robots.txt` is not served verbatim — Cloudflare prepends a
-  managed block above it, which leaves search indexing intact. Details in
-  "What Cloudflare changes on the way out" above.)
+  `X-Robots-Tag: noindex` or sit behind a login, and the wrong half of that
+  pattern is easy to carry across; both `_headers` and `robots.txt` here say so
+  in place. A company website search engines have been told to forget cannot do
+  the job described above. (`site/robots.txt` is not served verbatim; see
+  "What the host changes on the way out" above.)
 - **No availability claims, and no links a visitor cannot open.** Every card
   on the page is a shipped tool whose links resolve publicly: no store badges,
   no dates, no "coming soon", and nothing pointing at a page behind a login. A
@@ -133,16 +92,14 @@ page, not the file you edited.
 - **The Content-Security-Policy in `_headers` is as strict as the page is
   simple** — `default-src 'none'`, images and styles from `'self'`, nothing
   else. Adding a font, an embed, or an analytics tag will be blocked until the
-  policy is widened, which is the intended order of events. What that framing
-  missed: the script that trips this policy is likelier to be one *Cloudflare*
-  injected than one you added, and a blocked injection shows up nowhere in the
-  source. See "What Cloudflare changes on the way out" above.
-- **`site/mark.svg` is hand-drawn and is the only copy of the mark.** The IFO
-  site's icon is generated from the script that also emits its app-icon PNG,
-  specifically so the site's copy cannot drift from the app's. Nothing here has
-  a second copy to drift from — so if one is ever cut (an `apple-touch-icon`
-  PNG, say), generate it *from this file* rather than redrawing it, and this
-  paragraph stops being true.
+  policy is widened, which is the intended order of events. The script that
+  trips this policy is likelier to be one the host injected than one you added,
+  and a blocked injection shows up nowhere in the source. See "What the host
+  changes on the way out" above.
+- **`site/mark.svg` is hand-drawn and is the only copy of the mark.** Nothing
+  here has a second copy to drift from — so if one is ever cut (an
+  `apple-touch-icon` PNG, say), generate it *from this file* rather than
+  redrawing it, and this paragraph stops being true.
 - **Third-party marks are attributed in the fine print.** Microsoft, NinjaOne
   and the rest are named nominatively, to say what the tools work with. Adding
   a product that names another company's system means adding it there too.
@@ -159,7 +116,7 @@ page, not the file you edited.
 4. Deploy, then **diff the served page against the source** rather than trusting
    the deploy output:
    `curl -s 'https://tiredithumans.com/?v=1' | diff - site/index.html`
-   An empty diff is the pass condition. Anything else is Cloudflare rewriting
+   An empty diff is the pass condition. Anything else is the host rewriting
    the page on the way out — and an unexpected `<script>` in that diff is being
    blocked by the CSP, which means whatever it was meant to do is silently not
    happening. This check is what turns a broken contact address into a
